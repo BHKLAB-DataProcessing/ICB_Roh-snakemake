@@ -9,15 +9,11 @@ clin = read.csv( file.path(input_dir, "CLIN.txt"), stringsAsFactors=FALSE , sep=
 
 patient = paste( "P." , sort( unique( clin$Patient.ID ) ) , sep="" )
 
-rna_df <- fread( file.path(input_dir, "EXPR.txt.gz") , stringsAsFactors=FALSE  , sep="\t" )
-rna = paste("P.", rna_df$patient, sep="")
-# rna = colnames( fread( file.path(input_dir, "EXPR.txt.gz") , stringsAsFactors=FALSE  , sep=";" )[ , -1 ] ) 
-snv_df <- as.matrix( fread( file.path(input_dir, "SNV.txt.gz") , stringsAsFactors=FALSE , header=TRUE, fill=TRUE , sep="\t" ) )
-snv = sort( unique( snv_df[ , 1 ] ) ) 
-snv <- str_replace_all(snv, "\\D(?=.*)", "")
-snv <- sort( unique( snv ) )
-snv <- paste("P.", snv, sep="")
-# snv = sort( unique( as.matrix( fread( file.path(input_dir, "SNV.txt.gz") , stringsAsFactors=FALSE , header=TRUE, fill=TRUE , sep=";" ) )[ , 1 ] ) ) 
+# rna = colnames( fread( file.path(output_dir, "EXPR.csv") , stringsAsFactors=FALSE  , sep=";" )[ , -1 ] ) 
+rna = colnames(read.csv(file.path(output_dir, "EXPR.csv"), sep=';'))
+# snv = sort( unique( as.matrix( fread( file.path(input_dir, "SNV.csv") , stringsAsFactors=FALSE , header=TRUE, fill=TRUE , sep=";" ) )[ , 1 ] ) )
+snv_df <- read.csv( file.path(output_dir, "SNV.csv"), sep=";" )
+snv = sort( unique( snv_df$Sample ) ) 
 
 case = as.data.frame( cbind( patient , rep( 0 , length(patient) ) , rep( 0 , length(patient) ) , rep( 0 , length(patient) ) ) )
 colnames(case) = c( "patient" , "snv" , "cna" , "expr" )

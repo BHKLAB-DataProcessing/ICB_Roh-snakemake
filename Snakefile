@@ -41,12 +41,27 @@ rule download_annotation:
         wget https://github.com/BHKLAB-Pachyderm/Annotations/blob/master/Gencode.v40.annotation.RData?raw=true -O {prefix}annotation/Gencode.v40.annotation.RData 
         """
 
+rule format_cased_sequenced:
+    output:
+        S3.remote(prefix + "processed/cased_sequenced.csv")
+    input:
+        S3.remote(prefix + "download/CLIN.txt"),
+        S3.remote(prefix + "processed/EXPR.csv"),
+        S3.remote(prefix + "processed/SNV.csv")
+    resources:
+        mem_mb=1000
+    shell:
+        """
+        Rscript scripts/Format_cased_sequenced.R \
+        {prefix}download \
+        {prefix}processed \
+        """
+
 rule format_snv:
     output:
         S3.remote(prefix + "processed/SNV.csv")
     input:
         S3.remote(prefix + "download/SNV.txt.gz"),
-        S3.remote(prefix + "processed/cased_sequenced.csv")
     resources:
         mem_mb=3000
     shell:
@@ -61,7 +76,6 @@ rule format_expr:
         S3.remote(prefix + "processed/EXPR.csv")
     input:
         S3.remote(prefix + "download/EXPR.txt.gz"),
-        S3.remote(prefix + "processed/cased_sequenced.csv")
     resources:
         mem_mb=3000
     shell:
@@ -82,22 +96,6 @@ rule format_clin:
     shell:
         """
         Rscript scripts/Format_CLIN.R \
-        {prefix}download \
-        {prefix}processed \
-        """
-
-rule format_cased_sequenced:
-    output:
-        S3.remote(prefix + "processed/cased_sequenced.csv")
-    input:
-        S3.remote(prefix + "download/CLIN.txt"),
-        S3.remote(prefix + "download/EXPR.txt.gz"),
-        S3.remote(prefix + "download/SNV.txt.gz")
-    resources:
-        mem_mb=1000
-    shell:
-        """
-        Rscript scripts/Format_cased_sequenced.R \
         {prefix}download \
         {prefix}processed \
         """
