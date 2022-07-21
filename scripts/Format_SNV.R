@@ -4,8 +4,6 @@ args <- commandArgs(trailingOnly = TRUE)
 input_dir <- args[1]
 output_dir <- args[2]
 
-input_dir <- "~/Documents/GitHub/Pachyderm/PredictIO_ICB/data/ICB_Roh-data"
-
 snv = read.csv( gzfile( file.path(input_dir, "SNV.txt.gz") , "rt" ), stringsAsFactors=FALSE , sep="\t" )
 
 data = cbind( snv[ , c("start" , "Sample" , "Hugo_Symbol", "Variant_Class","ref_allele", "alt_allele"  ) ] ,
